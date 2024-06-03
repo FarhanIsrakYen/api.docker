@@ -1,9 +1,5 @@
 version: "3"
 
-networks:
-  laravel:
-    driver: bridge
-
 services:
     nginx:
         image: nginx:alpine
@@ -30,10 +26,10 @@ services:
         ports:
         - "${MYSQL_HOST_PORT}:${MYSQL_DOCKER_CONTAINER_PORT}"
         environment:
-        MYSQL_DATABASE: ${DB_DATABASE}
-        MYSQL_USER: ${DB_USERNAME}
-        MYSQL_PASSWORD: ${DB_PASSWORD}
-        MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ${DB_DATABASE}
+          MYSQL_USER: ${DB_USERNAME}
+          MYSQL_PASSWORD: ${DB_PASSWORD}
+          MYSQL_ROOT_PASSWORD: root
         volumes:
         - db-data:/var/lib/mysql/
         - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
@@ -42,8 +38,8 @@ services:
 
     php:
       build:
-      context: .
-      dockerfile: Dockerfile
+        context: .
+        dockerfile: Dockerfile
       container_name: php
       restart: unless-stopped
       tty: true
@@ -74,8 +70,8 @@ services:
 
 #Docker Networks
 networks:
-    laravel:
-        driver: bridge
+  laravel:
+    driver: bridge
 
 #Volumes
 volumes:
