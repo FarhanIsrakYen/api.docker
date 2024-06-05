@@ -31,7 +31,6 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - mysql/log:/var/log/mysql
       - mysql/conf:/etc/mysql
       - db-data:/var/lib/mysql
     networks:
