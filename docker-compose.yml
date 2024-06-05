@@ -31,7 +31,10 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - mysql/conf:/etc/mysql
+      - .db/data:/var/lib/mysql
+      - .logs:/var/log/mysql
+      - .db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - .db/sql:/docker-entrypoint-initdb.d
       - db-data:/var/lib/mysql
     networks:
       - laravel
