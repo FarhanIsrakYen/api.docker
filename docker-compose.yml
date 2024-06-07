@@ -31,11 +31,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - .db/data:/var/lib/mysql
-      - .logs:/var/log/mysql
-      - .db/my.cnf:/etc/mysql/conf.d/my.cnf
-      - .db/sql:/docker-entrypoint-initdb.d
-      - db-data:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
     networks:
       - laravel
 
@@ -75,7 +71,3 @@ services:
 networks:
   laravel:
     driver: bridge
-
-#Volumes
-volumes:
-  db-data: ~
