@@ -16,7 +16,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # xdebug
 RUN pecl install -o -f xdebug && docker-php-ext-enable xdebug
-COPY ./docker/xdebug/xdebug.ini "${PHP_INI_DIR}/conf.d"
+COPY ./xdebug/xdebug.ini "${PHP_INI_DIR}/conf.d"
 
 RUN pecl install -o -f redis \
     && rm -rf /tmp/pear \
