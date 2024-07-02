@@ -45,6 +45,7 @@ services:
     working_dir: /var/www/app
     volumes:
       - ../src:/var/www/app
+      - ./php/laravel.ini:/usr/local/etc/php/conf.d/laravel.ini
     ports:
       - "${PHP_HOST_PORT}:${PHP_DOCKER_CONTAINER_PORT}"
     networks:
