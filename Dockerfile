@@ -14,8 +14,16 @@ RUN docker-php-ext-install pdo pdo_mysql \
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-# xdebug
-RUN pecl install -o -f xdebug && docker-php-ext-enable xdebug
+# Install required packages using apk
+RUN apk update && apk add --no-cache \
+    autoconf \
+    build-base \
+    linux-headers \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# Clean up to reduce image size
+RUN rm -rf /var/cache/apk/*
 COPY ./xdebug/xdebug.ini "${PHP_INI_DIR}/conf.d"
 
 RUN pecl install -o -f redis \
