@@ -51,10 +51,24 @@ services:
     networks:
       - laravel
 
+  react:
+    image: node:14-alpine
+    container_name: react
+    working_dir: /var/www/app
+    command: sh -c "npm install && npm start"
+    volumes:
+      - ../src:/var/www/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - php
+    networks:
+      - laravel
+
   redis:
     image: redis:alpine
     container_name: redis
-    command: redis-server --appendonly yes --requirepass  "${REDIS_PASSWORD}"
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
     ports:
       - 6379:6379
 
@@ -68,7 +82,6 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_LOGIN}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
-#Docker Networks
 networks:
   laravel:
     driver: bridge
