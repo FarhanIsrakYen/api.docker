@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   nginx:
@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "8001:8001"
+      - "8000:80"
     volumes:
       - ../src:/var/www/app
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -15,11 +15,15 @@ services:
       - php
       - mysql
     networks:
-      - laravel
+      - php_framework_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   mysql:
     platform: linux/amd64
-    image: mysql
+    image: mysql:8.0
     container_name: mysql
     restart: unless-stopped
     tty: true
@@ -33,7 +37,11 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     networks:
-      - laravel
+      - php_framework_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   php:
     build:
@@ -42,46 +50,47 @@ services:
     container_name: php
     restart: unless-stopped
     tty: true
-    working_dir: /var/www/app
     volumes:
       - ../src:/var/www/app
-      - ./php/laravel.ini:/usr/local/etc/php/conf.d/laravel.ini
+      - ./php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
     ports:
-      - "${PHP_HOST_PORT}:${PHP_DOCKER_CONTAINER_PORT}"
+      - "9000:9000"
     networks:
-      - laravel
-
-  react:
-    image: node:14-alpine
-    container_name: react
-    working_dir: /var/www/app
-    command: sh -c "npm install && npm start"
-    volumes:
-      - ../src:/var/www/app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - php
-    networks:
-      - laravel
+      - php_framework_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
   redis:
     image: redis:alpine
     container_name: redis
     command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
     ports:
-      - 6379:6379
+      - "6379:6379"
+    networks:
+      - php_framework_network
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   rabbitmq:
     image: "rabbitmq:management"
     container_name: rabbitmq
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_LOGIN}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    networks:
+      - php_framework_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 networks:
-  laravel:
+  php_framework_network:
     driver: bridge
